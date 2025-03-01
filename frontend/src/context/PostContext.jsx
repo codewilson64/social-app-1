@@ -8,7 +8,11 @@ export const postsReducer = (state, action) => {
       return {
         posts: action.payload
       }
-      case 'DELETE_POST':
+    case 'CREATE_POST': 
+      return {
+        posts: [action.payload, ...state.posts]
+      }
+    case 'DELETE_POST':
       return {
         posts: state.posts.filter(post => post._id !== action.payload._id)
       }

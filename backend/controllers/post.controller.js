@@ -50,6 +50,9 @@ const createPost = async (req, res) => {
     if(!user) {
       return res.status(400).json({error: 'User not found'})
     }
+    if(text.length === 0) {
+      return res.status(400).json({error: 'You must write something first'})
+    }
 
     const post = await Post.create({user: userId, text})
     res.status(200).json({message: 'Post created', post})

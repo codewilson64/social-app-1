@@ -18,7 +18,7 @@ const Posts = ({ post }) => {
 
   const navigate = useNavigate()
 
-  const isMyPost = user.user._id === post?.user._id
+  const isMyPost = user.user._id === post?.user?._id
 
   // HandlePostComment
   const handlePostComment = (e) => {
@@ -45,12 +45,12 @@ const Posts = ({ post }) => {
 
         <div className='border border-t-0 border-gray-700'>
           
-            <div className='p-3 border-b border-gray-700'>
+            <div className='p-3'>
               <div className='relative mb-3'>
-                <Link to={`/profile/${post?.user.username}`} >
+                <Link to={`/profile/${post?.user?.username}`} >
                   <div className='flex items-center gap-2'>
-                    <h3 className='font-bold'>{post?.user.fullName}</h3>
-                    <p className='text-gray-600'>@{post?.user.username}</p>
+                    <h3 className='font-bold'>{post?.user?.fullName}</h3>
+                    <p className='text-gray-600'>@{post?.user?.username}</p>
                     <span className='text-gray-600'>{formattedDate}</span>                                  
                   </div>
                 </Link>         
@@ -69,20 +69,20 @@ const Posts = ({ post }) => {
                     className='w-4 h-4'
                     onClick={() => document.getElementById("comment_modal" + post._id).showModal()}
                   />
-                  {post?.comments.length}
+                  {post?.comments?.length}
                        {/* Open the modal using document.getElementById('ID').showModal() method */}
                   <dialog id={`comment_modal${post?._id}`} className="modal">
                     <div className="modal-box">
                       <div className='p-3'>
                         <h3 className="text-white font-bold text-lg">Comments</h3>
                       </div>
-                    {post?.comments.map((comment) => (
+                    {post?.comments?.map((comment) => (
                       <div key={comment._id} className='p-3'>
                         <div className='flex gap-2'>
-                          <h3 className='font-bold text-white'>{comment.user.fullName}</h3>
-                          <p className='text-gray-400'>@{comment.user.username}</p>
+                          <h3 className='font-bold text-white'>{comment?.user?.fullName}</h3>
+                          <p className='text-gray-400'>@{comment?.user?.username}</p>
                         </div>
-                        <p className='text-white'>{comment.text}</p>
+                        <p className='text-white'>{comment?.text}</p>
                       </div>
                     ))}
                     <form onSubmit={handlePostComment}>
@@ -103,7 +103,7 @@ const Posts = ({ post }) => {
 
                 <div className='flex items-center gap-1 hover:text-white'>
                   <FaRegHeart className='w-4 h-4'/>
-                  {post?.likes.length}
+                  {post?.likes?.length}
                 </div>
 
                 <div>

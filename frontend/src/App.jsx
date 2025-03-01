@@ -7,6 +7,7 @@ import Sidebar from './components/common/Sidebar'
 import ProfilePage from './Pages/Profile/ProfilePage'
 import { useContext } from 'react'
 import { AuthContext } from './context/AuthContext'
+import { Toaster } from 'react-hot-toast'
 
 function App() {
   const { user } = useContext(AuthContext)
@@ -21,6 +22,7 @@ function App() {
         <Route path='/notifications' element={user ? <NotificationPage /> : <Navigate to='/login' />}/>
         <Route path='/profile/:username' element={user ? <ProfilePage /> : <Navigate to='/login' />}/>
       </Routes>
+      <Toaster />
     </div>
   )
 }
