@@ -86,4 +86,27 @@ const DUMMYPOSTS = [
   },
 ]
 
+export const DUMMY_SUGGESTED_USERS = [
+	{
+		_id: "1",
+		fullName: "John Doe",
+		username: "johndoe",
+	},
+	{
+		_id: "2",
+		fullName: "Jane Doe",
+		username: "janedoe",
+	},
+	{
+		_id: "3",
+		fullName: "Bob Doe",
+		username: "bobdoe",
+	},
+	{
+		_id: "4",
+		fullName: "Daisy Doe",
+		username: "daisydoe",
+	},
+];
+
 export default DUMMYPOSTS

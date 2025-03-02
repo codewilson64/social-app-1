@@ -17,7 +17,7 @@ const Sidebar = () => {
   }
 
   return (
-    <div className='flex flex-col justify-between h-screen sticky top-0'>
+    <div className='w-[200px] flex flex-col justify-between h-screen sticky top-0'>
       <div className='flex flex-col gap-7 text-lg cursor-pointer'>
         <Link to='/'>
             <Xsvg className='w-12 h-12 fill-white'/>
