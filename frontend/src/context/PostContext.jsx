@@ -16,6 +16,10 @@ export const postsReducer = (state, action) => {
       return {
         posts: state.posts.filter(post => post._id !== action.payload._id)
       }
+    case 'COMMENT_POST': 
+      return {
+        posts: action.payload
+      }
     default: 
       return state
   }

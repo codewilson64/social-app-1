@@ -23,7 +23,14 @@ const useFollow = () => {
     }
 
     if(response.ok) {
-      localStorage.removeItem(_id)
+      // let users = JSON.parse(localStorage.getItem('suggested-users'))
+      // let index = users.forEach(user => user._id === _id)
+
+      // if(index > -1) {
+      //   users.splice(index, 1)
+      // }
+      // localStorage.setItem('suggested-users', JSON.stringify(users))
+
       navigate(0)
       setIsLoading(false)
     }

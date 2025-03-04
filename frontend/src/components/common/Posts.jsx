@@ -10,7 +10,10 @@ import { AuthContext } from "../../context/AuthContext";
 import { PostsContext } from "../../context/PostContext";
 
 const Posts = ({ post }) => {
-  const [comment, setComment] = useState('')
+  const [text, setText] = useState('')
+  const [isLiked, setIsLiked] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
   const formattedDate = '1h'
 
   const { user } = useContext(AuthContext)
@@ -21,9 +24,27 @@ const Posts = ({ post }) => {
   const isMyPost = user.user._id === post?.user?._id
 
   // HandlePostComment
-  const handlePostComment = (e) => {
+  const handlePostComment = async (e) => {
     e.preventDefault()
-    console.log('comment added')
+
+    setIsLoading(true)
+    const comment = { text }
+
+    const response = await fetch(`http://localhost:3050/api/post/comment/${post._id}`, {
+      method: 'POST',
+      body: JSON.stringify(comment),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      }
+    })
+    const data = await response.json()
+
+    if(response.ok) {
+      dispatch({type: 'COMMENT_POST', payload: data})
+      setIsLoading(false)
+      navigate(0)
+    }
   }
   
   // HandleDelete
@@ -36,6 +57,24 @@ const Posts = ({ post }) => {
 
     if(response.ok) {
       dispatch({type: 'DELETE_POST', payload: data})
+      navigate(0)
+    }
+  }
+
+  // HandleLikePost
+  const handleLikePost = async () => {
+    const response = await fetch(`http://localhost:3050/api/post/like/${post._id}`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${user.token}` }
+    })
+    const data = await response.json()
+
+    if(!response.ok) {
+      setError(data.error)
+    }
+
+    if(response.ok) {
+      setIsLiked(true)
       navigate(0)
     }
   }
@@ -89,8 +128,8 @@ const Posts = ({ post }) => {
                         <textarea 
                           className='w-full outline-none resize-none p-3 rounded-lg mb-2'
                           placeholder="Add a comment"
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
+                          value={text}
+                          onChange={(e) => setText(e.target.value)}
                         />
                         <button className='w-[70px] font-bold text-white bg-blue-500 rounded-full py-2'>Post</button>
                     </form>
@@ -101,8 +140,9 @@ const Posts = ({ post }) => {
                   </dialog>
                 </div>
 
-                <div className='flex items-center gap-1 hover:text-white'>
-                  <FaRegHeart className='w-4 h-4'/>
+                <div onClick={handleLikePost} className='flex items-center gap-1 hover:text-white'>
+                  {!isLiked && <FaRegHeart className='w-4 h-4'/>}
+                  {isLiked && <FaRegHeart className='w-4 h-4 fill-red-600'/>}
                   {post?.likes?.length}
                 </div>
 

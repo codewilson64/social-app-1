@@ -16,7 +16,7 @@ router.get('/all-post',protectRoute, getAllPost)
 router.get('/followingposts', protectRoute, getFollowingPosts)
 
 router.post('/create', protectRoute, createPost)
-router.post('/like/:id', likePost)
+router.post('/like/:id', protectRoute, likePost)
 router.post('/comment/:id', protectRoute, commentPost)
 
 router.delete('/delete/:id', protectRoute, deletePost)
