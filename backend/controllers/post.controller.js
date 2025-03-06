@@ -39,6 +39,30 @@ const getFollowingPosts = async (req, res) => {
   }
 } 
 
+// GET User posts
+const getUserPosts = async (req, res) => {
+  const { username } = req.params
+
+  try {
+    const user = await User.findOne({username})
+
+    if(!user) {
+      return res.status(400).json({error: 'User not found'})
+    }
+
+    const posts = await Post.find({user: user._id}).sort({createdAt: -1}).populate({
+      path: 'user',
+      select: '-password'
+    })
+    
+    res.status(200).json(posts)
+  } 
+  catch (error) {
+    console.log('Error in getUserPosts controller', error.message)
+    res.status(400).json({error: error.message})
+  }
+}
+
 // Create Post 
 const createPost = async (req, res) => {
   const { text } = req.body
@@ -136,4 +160,4 @@ const commentPost = async (req, res) => {
   }
 }
 
-module.exports = { getAllPost, getFollowingPosts, createPost, deletePost, likePost, commentPost }
+module.exports = { getAllPost, getFollowingPosts, getUserPosts, createPost, deletePost, likePost, commentPost }

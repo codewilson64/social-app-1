@@ -14,9 +14,9 @@ createRoot(document.getElementById('root')).render(
       <AuthContextProvider>
         <PostsContextProvider>
           <NotifsContextProvider>
-            <BrowserRouter>
-              <App />   
-            </BrowserRouter>
+              <BrowserRouter>
+                <App />   
+              </BrowserRouter>
           </NotifsContextProvider>
         </PostsContextProvider>
       </AuthContextProvider>

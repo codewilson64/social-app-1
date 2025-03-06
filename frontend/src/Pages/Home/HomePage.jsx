@@ -33,7 +33,6 @@ const HomePage = () => {
 
       if(response.ok) {
         dispatch({type: 'GET_ALL_POST', payload: data})
-        console.log(data)
       }
     }
     if(user) {

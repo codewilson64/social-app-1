@@ -1,14 +1,35 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Posts from "../../components/common/Posts";
 import EditProfileModal from "./EditProfileModal";
+
+import { useParams } from "react-router-dom";
 
 import { AuthContext } from "../../context/AuthContext";
 
 const ProfilePage = () => {
-  const { user } = useContext(AuthContext)
-
   const [feedType, setFeedType] = useState("posts");
   const [isMyProfile, setIsMyProfile] = useState(true);
+  const [userProfile, setUserProfile] = useState([])
+
+  const { user } = useContext(AuthContext)
+
+  const { username } = useParams()
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const response = await fetch(`http://localhost:3050/api/user/profile/${username}`, {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${user.token}` }
+      })
+      const data = await response.json()
+
+      if(response.ok) {
+        setUserProfile(data)
+      }
+    }
+
+    fetchUserProfile()
+  }, [username])
 
   return (
     <div className="w-[800px] mx-auto flex flex-col">
@@ -18,17 +39,17 @@ const ProfilePage = () => {
       <div className="p-3 border border-gray-700">
         <div className="flex justify-between">
           <div>
-            <h3 className="text-xl text-white font-bold">{user.user.fullName}</h3>
-            <p className="text-sm text-gray-400">@{user.user.username}</p>
+            <h3 className="text-xl text-white font-bold">{userProfile.fullName}</h3>
+            <p className="text-sm text-gray-400">@{userProfile.username}</p>
           </div>
           {isMyProfile && <EditProfileModal />}
         </div>
 
         <div className="mt-4">
-          <p className="text-white">{user.user.bio}</p>
+          <p className="text-white">{userProfile.bio}</p>
           <div className="flex gap-3 mt-4">
-            <p className="text-white font-bold">{user.user.following.length} Following</p>
-            <p className="text-white font-bold">{user.user.follower.length} Followers</p>
+            <p className="text-white font-bold">{userProfile?.following?.length} Following</p>
+            <p className="text-white font-bold">{userProfile?.follower?.length} Followers</p>
           </div>
         </div>
       </div>
