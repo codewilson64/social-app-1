@@ -2,6 +2,7 @@ import { FaRegComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
+import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 import { useContext, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom'
@@ -14,7 +15,6 @@ const Posts = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
-  const formattedDate = '1h'
 
   const { user } = useContext(AuthContext)
   const { dispatch } = useContext(PostsContext)
@@ -90,7 +90,9 @@ const Posts = ({ post }) => {
                   <div className='flex items-center gap-2'>
                     <h3 className='font-bold'>{post?.user?.fullName}</h3>
                     <p className='text-gray-600'>@{post?.user?.username}</p>
-                    <span className='text-gray-600'>{formattedDate}</span>                                  
+                    <span className='text-gray-600'>
+                      1h
+                    </span>                                  
                   </div>
                 </Link>         
                   {isMyPost && (
@@ -120,6 +122,9 @@ const Posts = ({ post }) => {
                         <div className='flex gap-2'>
                           <h3 className='font-bold text-white'>{comment?.user?.fullName}</h3>
                           <p className='text-gray-400'>@{comment?.user?.username}</p>
+                          <span className='text-gray-600'>
+                            1h
+                          </span>  
                         </div>
                         <p className='text-white'>{comment?.text}</p>
                       </div>

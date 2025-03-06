@@ -104,7 +104,7 @@ const likePost = async (req, res) => {
       // Send notification
       await Notification.create({
         from: userId,
-        to: id,
+        to: post.user,
         type: 'like'
       })
       res.status(200).json({message: 'Post has been liked'})

@@ -20,6 +20,10 @@ export const postsReducer = (state, action) => {
       return {
         posts: action.payload
       }
+    case 'GET_ALL_NOTIFS': 
+      return {
+        posts: action.payload
+      }
     default: 
       return state
   }

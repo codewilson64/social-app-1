@@ -23,7 +23,7 @@ function App() {
         <Route path='/notifications' element={user ? <NotificationPage /> : <Navigate to='/login' />}/>
         <Route path='/profile/:username' element={user ? <ProfilePage /> : <Navigate to='/login' />}/>
       </Routes>
-      <SuggestedUsers />
+      {user && <SuggestedUsers />}
       <Toaster />
     </div>
   )
