@@ -40,7 +40,14 @@ const userSchema = new mongoose.Schema({
   profileImg: {
     type: String,
     default: ''
-  }
+  },
+  likedPosts: [
+    { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Post', 
+      default: [] 
+     }
+  ]
 })
 
 module.exports = mongoose.model('User', userSchema)

@@ -1,44 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import CreatePost from './CreatePost'
 import Posts from '../../components/common/Posts'
 
-import { PostsContext } from '../../context/PostContext';
-import { AuthContext } from '../../context/AuthContext';
-
 const HomePage = () => {
   const [feedType, setFeedType] = useState('forYou')
-  const { posts, dispatch } = useContext(PostsContext)
-  const { user } = useContext(AuthContext)
-
-  const getPostEndpoint = () => {
-    switch(feedType){
-      case 'forYou': 
-        return 'http://localhost:3050/api/post/all-post'
-      case 'following':
-        return 'http://localhost:3050/api/post/followingposts'
-      default:
-        return 'http://localhost:3050/api/post/all-post'
-    }
-  }
-
-  const POST_ENDPOINT = getPostEndpoint()
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch(POST_ENDPOINT, {
-        headers: { 'Authorization': `Bearer ${user.token}` }
-      })
-      const data = await response.json()
-
-      if(response.ok) {
-        dispatch({type: 'GET_ALL_POST', payload: data})
-      }
-    }
-    if(user) {
-      fetchPosts()
-    }
-  }, [feedType])
 
   return (
     <div className='w-[800px] mx-auto flex flex-col'>
@@ -66,9 +32,8 @@ const HomePage = () => {
 
       <CreatePost />
       
-      {posts && posts.map((post) => (
-        <Posts key={post._id} post={post}/>
-      ))}
+      <Posts feedType={feedType}/>
+
     </div>
     )
 }

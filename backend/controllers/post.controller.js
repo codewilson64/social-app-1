@@ -63,6 +63,26 @@ const getUserPosts = async (req, res) => {
   }
 }
 
+// GET liked posts
+const getLikedPosts = async (req, res) => {
+  const { username } = req.params 
+
+  try {
+    const user = await User.findOne({username})
+
+    const likedPosts = await Post.find({_id: {$in: user.likedPosts}}).populate({
+      path: 'user',
+      select: '-password'
+    })
+
+    res.status(200).json(likedPosts)
+  } 
+  catch (error) {
+    console.log('Error in getLikedPost controller', error.message)
+    res.status(400).json({error: error.message})
+  }
+}
+
 // Create Post 
 const createPost = async (req, res) => {
   const { text } = req.body
@@ -122,9 +142,11 @@ const likePost = async (req, res) => {
 
     if(isLiked) {
       await Post.findByIdAndUpdate(id, {$pull: {likes: userId}})
+      await User.findByIdAndUpdate(userId, {$pull: {likedPosts: id}})
       res.status(200).json({message: 'Post has been unliked'})
     } else {
       await Post.findByIdAndUpdate(id, {$push: {likes: userId}})
+      await User.findByIdAndUpdate(userId, {$push: {likedPosts: id}})
       // Send notification
       await Notification.create({
         from: userId,
@@ -160,4 +182,4 @@ const commentPost = async (req, res) => {
   }
 }
 
-module.exports = { getAllPost, getFollowingPosts, getUserPosts, createPost, deletePost, likePost, commentPost }
+module.exports = { getAllPost, getFollowingPosts, getLikedPosts, getUserPosts, createPost, deletePost, likePost, commentPost }

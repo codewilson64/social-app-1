@@ -68,7 +68,7 @@ const ProfilePage = () => {
           {feedType === "likes" && <div className="absolute w-[100px] h-1 left-[50%] bottom-0 translate-x-[-50%] translate-y-[-50%] rounded-full bg-sky-400"></div>}
         </div>
       </div>
-      <Posts />
+      <Posts username={username} feedType={feedType} />
     </div>
   );
 };
