@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Posts from "../../components/common/Posts";
 import EditProfileModal from "./EditProfileModal";
+import useFollow from '../../hooks/useFollow'
 
 import { useParams } from "react-router-dom";
 
@@ -8,12 +9,15 @@ import { AuthContext } from "../../context/AuthContext";
 
 const ProfilePage = () => {
   const [feedType, setFeedType] = useState("posts");
-  const [isMyProfile, setIsMyProfile] = useState(true);
   const [userProfile, setUserProfile] = useState([])
 
+  const { follow, isLoading } = useFollow()
   const { user } = useContext(AuthContext)
 
   const { username } = useParams()
+
+  const isMyProfile = user.user._id === userProfile._id
+  const amIFollowing = userProfile?.follower?.includes(user.user._id)
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -43,6 +47,20 @@ const ProfilePage = () => {
             <p className="text-sm text-gray-400">@{userProfile.username}</p>
           </div>
           {isMyProfile && <EditProfileModal />}
+          {!isMyProfile && (
+            <button 
+            disabled={isLoading}
+            className='w-[80px] font-bold text-white bg-blue-500 rounded-full py-2 mb-3'
+            onClick={(e) => {
+              e.preventDefault()
+              follow(userProfile._id)
+            }}  
+          >
+              {!isLoading && amIFollowing && "Unfollow"}
+              {!isLoading && !amIFollowing && "Follow"}
+          </button>
+          )               
+          }
         </div>
 
         <div className="mt-4">

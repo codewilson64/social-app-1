@@ -20,6 +20,10 @@ export const postsReducer = (state, action) => {
       return {
         posts: action.payload
       }
+    case 'LIKE_POST':
+      return {
+        posts: action.payload
+      }
     case 'GET_ALL_NOTIFS': 
       return {
         posts: action.payload
@@ -31,7 +35,7 @@ export const postsReducer = (state, action) => {
 
 export const PostsContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(postsReducer, {
-    posts: null,
+    posts: [],
   })
 
   console.log('PostContext state: ', state)

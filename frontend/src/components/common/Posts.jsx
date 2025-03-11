@@ -88,7 +88,6 @@ const Posts = ({ feedType, username }) => {
 
     if(response.ok) {
       dispatch({type: 'DELETE_POST', payload: data})
-      navigate(0)
     }
   }
 
@@ -111,8 +110,8 @@ const Posts = ({ feedType, username }) => {
   }
 
   return (
-    <div>
-      {posts && posts.map((post) => (
+    <>
+      {posts.map((post) => (
         <div key={post._id} className='border border-t-0 border-gray-700'>          
           <div className='p-3'>
             <div className='relative mb-3'>
@@ -188,7 +187,7 @@ const Posts = ({ feedType, username }) => {
           </div>
         </div>
       ))}
-  </div>
+  </>
   )
 }
 

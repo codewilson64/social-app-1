@@ -30,6 +30,10 @@ const getFollowingPosts = async (req, res) => {
 
     const followingPosts = await Post.find({user: {$in: user.following}})
       .sort({createdAt: -1})
+      .populate({
+        path: 'user',
+        select: '-password'
+      })
 
     res.status(200).json(followingPosts)
   } 
@@ -99,7 +103,7 @@ const createPost = async (req, res) => {
     }
 
     const post = await Post.create({user: userId, text})
-    res.status(200).json({message: 'Post created', post})
+    res.status(200).json(post)
   } 
   catch (error) {
     console.log('Error in createPost controller', error.message)
@@ -118,7 +122,7 @@ const deletePost = async (req, res) => {
       return res.status(400).json({error: 'Post not found'})
     }
 
-    res.status(200).json({message: 'Post deleted success'})
+    res.status(200).json(post)
   } 
   catch (error) {
     console.log('Error in deletePost controller', error.message)
@@ -143,7 +147,7 @@ const likePost = async (req, res) => {
     if(isLiked) {
       await Post.findByIdAndUpdate(id, {$pull: {likes: userId}})
       await User.findByIdAndUpdate(userId, {$pull: {likedPosts: id}})
-      res.status(200).json({message: 'Post has been unliked'})
+      res.status(200).json(post)
     } else {
       await Post.findByIdAndUpdate(id, {$push: {likes: userId}})
       await User.findByIdAndUpdate(userId, {$push: {likedPosts: id}})
@@ -153,7 +157,7 @@ const likePost = async (req, res) => {
         to: post.user,
         type: 'like'
       })
-      res.status(200).json({message: 'Post has been liked'})
+      res.status(200).json(post)
     }
   } 
   catch (error) {

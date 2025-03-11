@@ -1,13 +1,39 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const EditProfileModal = () => {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
+  const [error, setError] = useState(null)
 
-  const handleUpdate = (e) => {
+  const { user, dispatch } = useContext(AuthContext)
+
+  const navigate = useNavigate()
+
+  const handleUpdate = async (e) => {
     e.preventDefault()
-    console.log('Profile updated')
+    
+    const userProfile = { fullName, username, bio }
+
+    const response = await fetch('http://localhost:3050/api/user/update', {
+      method: 'PATCH',
+      body: JSON.stringify(userProfile),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      }
+    })
+    const data = await response.json()
+
+    if(!response.ok) {
+      setError(data.error)
+    }
+
+    if(response.ok) {
+      dispatch({type: 'LOGIN', payload: data})
+    }
   } 
 
   return (

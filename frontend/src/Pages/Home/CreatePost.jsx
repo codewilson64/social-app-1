@@ -4,8 +4,6 @@ import { AuthContext } from '../../context/AuthContext'
 import { PostsContext } from '../../context/PostContext'
 import { useNavigate } from 'react-router-dom'
 
-import { toast } from 'react-hot-toast'
-
 const CreatePost = () => {
   const [text, setText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -39,9 +37,9 @@ const CreatePost = () => {
     }
 
     if(response.ok) {
-      dispatch({type: 'CREATE_POST', payload: data})
+      setText('')
       setIsLoading(false)
-      toast.success('Post created!')
+      dispatch({type: 'CREATE_POST', payload: data})
       navigate(0)
     }
   }
