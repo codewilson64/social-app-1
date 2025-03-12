@@ -7,7 +7,7 @@ const HomePage = () => {
   const [feedType, setFeedType] = useState('forYou')
 
   return (
-    <div className='w-[800px] mx-auto flex flex-col'>
+    <div className='w-[700px] mx-auto flex flex-col'>
       <div className='flex border border-gray-700'>
         <div 
           className='relative w-full text-center p-3 hover:bg-slate-800 border-r border-gray-700 cursor-pointer'

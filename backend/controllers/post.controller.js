@@ -2,6 +2,8 @@ const Post = require("../models/post.model")
 const User = require('../models/user.model')
 const Notification = require('../models/notification.model')
 
+const cloudinary = require('cloudinary')
+
 // Get all Post
 const getAllPost = async (req, res) => {
   try {
@@ -34,6 +36,10 @@ const getFollowingPosts = async (req, res) => {
         path: 'user',
         select: '-password'
       })
+      .populate({
+        path: 'comments.user',
+        select: '-password'
+      })
 
     res.status(200).json(followingPosts)
   } 
@@ -54,10 +60,15 @@ const getUserPosts = async (req, res) => {
       return res.status(400).json({error: 'User not found'})
     }
 
-    const posts = await Post.find({user: user._id}).sort({createdAt: -1}).populate({
-      path: 'user',
-      select: '-password'
-    })
+    const posts = await Post.find({user: user._id}).sort({createdAt: -1})
+      .populate({
+        path: 'user',
+        select: '-password'
+      })
+      .populate({
+        path: 'comments.user',
+        select: '-password'
+      })
     
     res.status(200).json(posts)
   } 
@@ -74,10 +85,15 @@ const getLikedPosts = async (req, res) => {
   try {
     const user = await User.findOne({username})
 
-    const likedPosts = await Post.find({_id: {$in: user.likedPosts}}).populate({
-      path: 'user',
-      select: '-password'
-    })
+    const likedPosts = await Post.find({_id: {$in: user.likedPosts}})
+      .populate({
+        path: 'user',
+        select: '-password'
+      })
+      .populate({
+        path: 'comments.user',
+        select: '-password'
+      })
 
     res.status(200).json(likedPosts)
   } 
@@ -90,10 +106,11 @@ const getLikedPosts = async (req, res) => {
 // Create Post 
 const createPost = async (req, res) => {
   const { text } = req.body
+  let { image } = req.body
   const userId = req.user._id
 
   try {
-    const user = await User.findById(userId)  
+    const user = await User.findById(userId)
     
     if(!user) {
       return res.status(400).json({error: 'User not found'})
@@ -102,7 +119,13 @@ const createPost = async (req, res) => {
       return res.status(400).json({error: 'You must write something first'})
     }
 
-    const post = await Post.create({user: userId, text})
+    if(image) {
+      const uploadedResponse = await cloudinary.uploader.upload(image)
+      image = uploadedResponse.secure_url
+    }
+
+    const post = await Post.create({user: userId, text, image})
+
     res.status(200).json(post)
   } 
   catch (error) {
@@ -120,6 +143,10 @@ const deletePost = async (req, res) => {
 
     if(!post) {
       return res.status(400).json({error: 'Post not found'})
+    }
+
+    if(post.image) {
+      await cloudinary.uploader.destroy(post.image.split('/').pop().split('/')[0])
     }
 
     res.status(200).json(post)

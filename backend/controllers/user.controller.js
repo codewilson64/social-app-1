@@ -1,7 +1,11 @@
+const bcrypt = require('bcrypt')
+
+// Models
 const User = require('../models/user.model')
 const Notification = require('../models/notification.model')
 
-const bcrypt = require('bcrypt')
+// Cloudinary
+const cloudinary = require('cloudinary')
 
 // GET profile
 const getUserProfile = async (req, res) => {
@@ -70,6 +74,7 @@ const followAndUnfollowUser = async (req, res) => {
 // UPDATE user profile
 const updateUserProfile = async (req, res) => {
   const { fullName, username, email, oldPassword, newPassword, bio } = req.body
+  let { profileImg } = req.body
   const userId = req.user._id
 
   try {
@@ -96,10 +101,20 @@ const updateUserProfile = async (req, res) => {
       user.password = await bcrypt.hash(newPassword, salt)
     }
 
+    if(profileImg) {
+      if(user.profileImg) {
+        await cloudinary.uploader.destroy(user.profileImg.split('/').pop().split('.')[0])
+      }
+
+      const uploadedResponse = await cloudinary.uploader.upload(profileImg)
+      profileImg = uploadedResponse.secure_url
+    }
+
     user.fullName = fullName || user.fullName
     user.username = username || user.username
     user.email = email || user.email
     user.bio = bio || user.bio
+    user.profileImg = profileImg || user.profileImg
 
     user = await user.save()
     return res.status(200).json(user)

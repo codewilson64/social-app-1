@@ -2,6 +2,7 @@ import { FaRegComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
+import avatar from '../../public/public/avatar-placeholder.png'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 import { useContext, useState, useEffect } from "react";
@@ -55,13 +56,11 @@ const Posts = ({ feedType, username }) => {
   }, [feedType, username])
 
   // HandlePostComment
-  const handlePostComment = async (e) => {
-    e.preventDefault()
-
+  const handlePostComment = async (_id) => {
     setIsLoading(true)
     const comment = { text }
 
-    const response = await fetch(`http://localhost:3050/api/post/comment/${post._id}`, {
+    const response = await fetch(`http://localhost:3050/api/post/comment/${_id}`, {
       method: 'POST',
       body: JSON.stringify(comment),
       headers: {
@@ -74,7 +73,6 @@ const Posts = ({ feedType, username }) => {
     if(response.ok) {
       dispatch({type: 'COMMENT_POST', payload: data})
       setIsLoading(false)
-      navigate(0)
     }
   }
   
@@ -115,15 +113,18 @@ const Posts = ({ feedType, username }) => {
         <div key={post._id} className='border border-t-0 border-gray-700'>          
           <div className='p-3'>
             <div className='relative mb-3'>
-              <Link to={`/profile/${post?.user?.username}`} >
-                <div className='flex items-center gap-2'>
-                  <h3 className='font-bold'>{post?.user?.fullName}</h3>
-                  <p className='text-gray-600'>@{post?.user?.username}</p>
-                  <span className='text-gray-600'>
-                    1h
-                  </span>                                  
-                </div>
-              </Link>         
+              <Link to={`/profile/${post?.user?.username}`} className="flex items-center gap-2 mb-3">
+                <img className="w-8 rounded-full" src={avatar} />
+                <Link to={`/profile/${post?.user?.username}`} >
+                  <div className='flex items-center gap-2'>
+                    <h3 className='font-bold'>{post?.user?.fullName}</h3>
+                    <p className='text-gray-600'>@{post?.user?.username}</p>
+                    <span className='text-gray-600'>
+                      1h
+                    </span>                                  
+                  </div>
+                </Link>         
+              </Link>
                 {user.user._id === post?.user?._id && (
                   <FaTrash 
                     className='absolute right-0 top-1 w-4 h-4 cursor-pointer hover:text-red-400'
@@ -158,14 +159,18 @@ const Posts = ({ feedType, username }) => {
                       <p className='text-white'>{comment?.text}</p>
                     </div>
                   ))}
-                  <form onSubmit={handlePostComment}>
+                  <form>
                       <textarea 
                         className='w-full outline-none resize-none p-3 rounded-lg mb-2'
                         placeholder="Add a comment"
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                       />
-                      <button className='w-[70px] font-bold text-white bg-blue-500 rounded-full py-2'>Post</button>
+                      <button 
+                        className='w-[70px] font-bold text-white bg-blue-500 rounded-full py-2'
+                        onClick={() => handlePostComment(post._id)}
+                        >Post
+                      </button>
                   </form>
                   </div>
                   <form method="dialog" className="modal-backdrop">

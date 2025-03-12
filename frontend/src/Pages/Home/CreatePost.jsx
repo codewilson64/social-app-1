@@ -1,11 +1,19 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
+
+import { CiImageOn } from "react-icons/ci";
+import { IoCloseSharp } from "react-icons/io5";
 
 import { AuthContext } from '../../context/AuthContext'
 import { PostsContext } from '../../context/PostContext'
+
 import { useNavigate } from 'react-router-dom'
 
 const CreatePost = () => {
   const [text, setText] = useState('')
+  const [image, setImage] = useState(null)
+
+  const imageRef = useRef(null)
+
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(false)
 
@@ -13,6 +21,17 @@ const CreatePost = () => {
   const { dispatch } = useContext(PostsContext)
 
   const navigate = useNavigate()
+
+  const handleImgChange = (e) => {
+		const file = e.target.files[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				setImage(reader.result);
+			};
+			reader.readAsDataURL(file);
+		}
+	};
 
   // HandleSubmit 
   const handleSubmit = async (e) => {
@@ -54,11 +73,26 @@ const CreatePost = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
+          {image && (
+            <div className='relative w-72 mx-auto'>
+              <IoCloseSharp 
+                className='absolute top-0 right-0 text-white bg-gray-800 rounded-full w-5 h-5 cursor-pointer'
+                onClick={() => {
+                  setImage(null);
+                  imageRef.current.value = null;
+                }}
+              />
+              <img src={image} className='w-full mx-auto h-72 object-contain rounded' />
+            </div>
+          )}
         </div>
-        
-        <button disabled={isLoading} className='w-[70px] font-bold text-white bg-blue-500 rounded-full py-2 mb-3'>
-          {isLoading ? 'Posting...' : 'Post'}
-        </button>
+        <div className='flex items-center gap-3'>
+          <CiImageOn onClick={() => imageRef.current.click()} className='w-7 h-7 cursor-pointer'/>
+          <input type='file' accept='image/*' hidden ref={imageRef} onChange={handleImgChange} />
+          <button disabled={isLoading} className='w-[70px] font-bold text-white bg-blue-500 rounded-full py-2'>
+            {isLoading ? 'Posting...' : 'Post'}
+          </button>
+        </div>
         {error && <p className='text-red-400'>{error}</p>}
       </form>
     </div>
