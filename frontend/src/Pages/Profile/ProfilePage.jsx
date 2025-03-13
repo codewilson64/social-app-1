@@ -59,7 +59,7 @@ const ProfilePage = () => {
       </div>
 
       <div className="p-3 border border-b-0 border-gray-700">
-        <div className="relative w-28 rounded-full mb-5">
+        <div className="relative w-28 rounded-full mb-5 object-cover">
           <img className="rounded-full" src={profileImage || avatar} />         
             {isMyProfile && (
               <div className='absolute top-5 right-3 p-1 bg-blue-600 rounded-full cursor-pointer'>

@@ -131,8 +131,13 @@ const Posts = ({ feedType, username }) => {
                     onClick={() => handleDelete(post._id)}
                   />   
                 )}
-              <p>{post?.text}</p>
-            </div>
+              <p className="mb-3">{post?.text}</p>             
+                {post.image && (
+                  <div className="flex justify-center border border-gray-700 rounded-xl">
+                    <img src={post.image} className="h-80 object-contain" alt="" />
+                  </div>
+                )}       
+              </div>
     
             <div className='flex items-center gap-12 text-gray-400 cursor-pointer'>
               <div className='flex items-center gap-1 hover:text-white'>

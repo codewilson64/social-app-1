@@ -23,7 +23,6 @@ const SuggestedUsers = () => {
       const data = await response.json()
 
       if(response.ok) {
-        // localStorage.setItem('suggested_users', JSON.stringify(data))
         dispatch({type: 'GET_SUGGESTED_USERS', payload: data})
       }
     }

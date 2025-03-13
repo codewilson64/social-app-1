@@ -38,7 +38,7 @@ const CreatePost = () => {
     e.preventDefault()
 
     setIsLoading(true)
-    const post = { text }
+    const post = { text, image }
     
     const response = await fetch('http://localhost:3050/api/post/create', {
       method: 'POST',
@@ -57,6 +57,7 @@ const CreatePost = () => {
 
     if(response.ok) {
       setText('')
+      setImage(null)
       setIsLoading(false)
       dispatch({type: 'CREATE_POST', payload: data})
       navigate(0)
